@@ -1,12 +1,16 @@
 
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../redux/userSlice";
 
 function Navbar() {
   const navigate = useNavigate();
-
+  const dispatch=useDispatch()
+    const {user,isAuthenticated}=useSelector((state)=>state.user)
   // Handle logout (optional)
   const handleLogout = () => {
     localStorage.removeItem("token"); // remove JWT token if stored
+    dispatch(logout())
     navigate("/login");
   };
 
@@ -16,16 +20,16 @@ function Navbar() {
 
       <div className="flex gap-4">
         <Link to="/" className="hover:text-teal-400">Home</Link>
+        {isAuthenticated?(<>
+        
         <Link to="/profile" className="hover:text-teal-400">Profile</Link>
-        <Link to="/login" className="hover:text-teal-400">Login</Link>
-        <Link to="/signup" className="hover:text-teal-400">Signup</Link>
-
-        <button
-          onClick={handleLogout}
-          className="bg-teal-500 hover:bg-teal-600 text-white px-3 py-1 rounded-md"
-        >
-          Logout
-        </button>
+        <p style={{color:"yellow"}}>{user.name}</p>
+        <button className="bg-teal-500 hover:bg-teal-600 text-white px-3 py-1 rounded-md" onClick={()=>handleLogout()}>LogOut</button>
+        </>):
+        
+        <Link to="/login" className="hover:text-teal-400">Login</Link>}
+        
+    
       </div>
     </nav>
   );

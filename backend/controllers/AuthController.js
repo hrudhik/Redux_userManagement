@@ -8,8 +8,9 @@ import jwt from "jsonwebtoken";
 const SignUp = async (req, res) => {
     try {
         const { name, email, password } = req.body;
-
-        const existingUser = User.findOne(email)
+        
+        const existingUser =await User.findOne({email:email})
+        
         if (existingUser) {
             return res.status(400).json({ message: "User allready exists" })
         }
@@ -39,7 +40,7 @@ const loginUser = async (req, res) => {
     if (!user) return res.status(400).json({ message: "User not found" });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isPasswordValid) return res.status(400).json({ message: "Invalid password" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
