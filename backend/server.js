@@ -1,8 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
 import {connectDB} from './config/db.js'
 import userRoute from '../backend/router/userRoute.js'
+import { adminRout } from './router/adminRoute.js';
 
 dotenv.config()
 
@@ -13,6 +16,14 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/',userRoute)
+
+app.use('/admin',adminRout)
+
+
+
+
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
 
 app.get('/',(req,res)=>{
     res.send('this is backend server')

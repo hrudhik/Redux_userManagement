@@ -8,7 +8,7 @@ const userSchema=new mongoose.Schema({
     password:{type:String,require:true},
     profile:{type:String},
     role:{type:String,default:"user"},
-    blocked:{type:Boolean,default:false}
+    isBlocked:{type:Boolean,default:false}
 }) 
 
 const User= mongoose.model("User",userSchema);

@@ -1,28 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../redux/userSlice";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
+  const { user, isAuthenticated } = useSelector((state) => state.user);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:5000/login", form);
       localStorage.setItem("token", res.data.token);
-      dispatch(loginSuccess({user:res.data.user,token:res.data.token}))        
+      dispatch(loginSuccess({ user: res.data.user, token: res.data.token }));
       alert(res.data.message);
       navigate("/");
     } catch (err) {
       alert(err.response?.data?.message || "Error occurred");
     }
   };
+
 
   return (
     <div style={{ padding: "20px" }}>
@@ -35,7 +38,9 @@ export default function Login() {
           value={form.email}
           onChange={handleChange}
           required
-        /><br /><br />
+        />
+        <br />
+        <br />
         <input
           name="password"
           placeholder="Password"
@@ -43,7 +48,9 @@ export default function Login() {
           value={form.password}
           onChange={handleChange}
           required
-        /><br /><br />
+        />
+        <br />
+        <br />
         <button type="submit">Login</button>
       </form>
     </div>

@@ -3,21 +3,20 @@ import axios from "axios";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
-  const [edit,setEdit]=useState(false)
-  const [form,setForm]=useState({ name: "", email: "", password: "" })
+  const [edit, setEdit] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        if(!token){
-          alert("no token found plaese login")
+        if (!token) {
+          alert("no token found plaese login");
         }
         const res = await axios.get("http://localhost:5000/profile", {
           headers: { Authorization: token },
-
         });
-        console.log("from the backend",res.data.user)
+        console.log("from the backend", res.data.user);
         setUser(res.data.user);
       } catch (err) {
         console.log(err);
@@ -27,47 +26,93 @@ export default function Profile() {
     fetchProfile();
   }, []);
 
-  const handelchange=(e)=>{
-    setForm({...form,[e.target.name]:e.target.value})
-  }
+  const handelchange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  const handelUpdate=async () => {
+  const formData = new FormData();
+  formData.append("name", form.name);
+  formData.append("email", form.email);
+  formData.append("password", form.password);
+  if (form.image) formData.append("image", form.image);
+
+  const handelUpdate = async () => {
     try {
-      const token=localStorage.getItem("token");
-      const res=await axios.put('http://localhost:5000/updateProfile',form,{
-        headers:{Authorization:token}
-      })
-      alert("profile updated succefully")
-      setUser({...user,name:res.data.name,email:res.data.email})
-      setEdit(false)
-
-
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        "http://localhost:5000/updateProfile",
+        formData,
+        {
+          headers: { Authorization: token },
+        }
+      );
+      alert("profile updated succefully");
+      setUser({ ...user, name: res.data.name, email: res.data.email });
+      setEdit(false);
     } catch (error) {
-      
-      confirm.log(error)
-      alert("faild to update profile")
+      confirm.log(error);
+      alert("faild to update profile");
     }
-  }
+  };
 
   if (!user) return <p>Loading...</p>;
 
   return (
     <div>
-      {!edit?<div style={{ padding: "20px" }}>
-      <h2>Profile</h2>
-      <p><b>Name:</b> {user.name}</p>
-      <p><b>Email:</b> {user.email}</p>
-      <p><b>Role:</b> {user.role}</p>
-      <button onClick={()=>setEdit(true)}>Edit Profile</button>
-    </div>:
-    <div>
-      <input type="text" placeholder="name" value={form.name} name="name" onChange={handelchange}/>
-      <input type="email" placeholder="email" value={form.email} name="email" onChange={handelchange}/>
-      <input type="password" placeholder="password" value={form.password} name="password" onChange={handelchange}/>
-      <button onClick={handelUpdate}>save</button>
-      <button onClick={()=>setEdit(false)}>cancel</button>
-      </div>}
-      
+      {!edit ? (
+        <div style={{ padding: "20px" }}>
+          <h2>Profile</h2>
+          <img
+            src={`http://localhost:5000${user.profile}`}
+            alt="profile image"
+            width="150" 
+            height="150"
+            style={{ borderRadius: "50%", objectFit: "cover" }}
+          />
+          <p>
+            <b>Name:</b> {user.name}
+          </p>
+          <p>
+            <b>Email:</b> {user.email}
+          </p>
+          <p>
+            <b>Role:</b> {user.role}
+          </p>
+          <button onClick={() => setEdit(true)}>Edit Profile</button>
+        </div>
+      ) : (
+        <div>
+          <input
+            type="file"
+            name="image"
+            onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
+          />
+
+          <input
+            type="text"
+            placeholder={user.name}
+            value={form.name}
+            name="name"
+            onChange={handelchange}
+          />
+          <input
+            type="email"
+            placeholder={user.email}
+            value={form.email}
+            name="email"
+            onChange={handelchange}
+          />
+          <input
+            type="password"
+            placeholder="password"
+            value={form.password}
+            name="password"
+            onChange={handelchange}
+          />
+          <button onClick={handelUpdate}>save</button>
+          <button onClick={() => setEdit(false)}>cancel</button>
+        </div>
+      )}
     </div>
   );
 }
