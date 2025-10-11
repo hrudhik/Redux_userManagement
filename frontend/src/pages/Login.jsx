@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/userSlice";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isAuthenticated } = useSelector((state) => state.user);
+  // const { user, isAuthenticated } = useSelector((state) => state.user);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });

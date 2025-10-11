@@ -1,11 +1,15 @@
 import { Router } from "express";
-import { adminlogin } from "../controllers/AdminController.js";
+import { adminlogin ,getAllUsers,addUser,updateUser,deleteUser} from "../controllers/AdminController.js";
 
 
 
 const adminRout=Router()
 
-adminRout.post('/admin/login',adminlogin)
+adminRout.post('/login',adminlogin)
+adminRout.get("/users", getAllUsers);
+adminRout.post("/users", addUser);
+adminRout.put("/users/:id", updateUser);
+adminRout.delete("/users/:id", deleteUser);
 
 export {
     adminRout

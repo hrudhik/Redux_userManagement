@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Navbar from "../components/Navbar";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -59,6 +60,7 @@ export default function Profile() {
 
   return (
     <div>
+      <Navbar/>
       {!edit ? (
         <div style={{ padding: "20px" }}>
           <h2>Profile</h2>
